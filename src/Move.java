@@ -1,17 +1,17 @@
 public class Move {
-    private String start;
-    private String end;
+    private Position start;
+    private Position end;
 
-    public Move(String end, String start) {
-        this.end = end;
+    public Move(Position start, Position end) {
         this.start = start;
+        this.end = end;
     }
 
-    public String getStart() {
+    public Position getStart() {
         return start;
     }
 
-    public String getEnd() {
+    public Position getEnd() {
         return end;
     }
 }
