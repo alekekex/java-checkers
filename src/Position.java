@@ -4,7 +4,7 @@ public class Position {
 
     public Position(String position) {
         this.column = position.charAt(0);
-        this.row = Integer.parseInt(String.valueOf(position.charAt(1)));
+        this.row = position.charAt(1) - '0';
     }
 
     public int getColumn() {
