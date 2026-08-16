@@ -44,12 +44,12 @@ public class Board {
         }
     }
 
-    public boolean isEmpty(Position position) {
-        return board[position.getRow()][position.getColumn()] == null;
-    }
-
     public Piece getPiece(Position position) {
         return board[position.getRow()][position.getColumn()];
+    }
+
+    public boolean isEmpty(Position position) {
+        return board[position.getRow()][position.getColumn()] == null;
     }
 
     public void movePiece(Move move) {
