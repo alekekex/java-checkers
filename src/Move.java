@@ -1,6 +1,6 @@
 public class Move {
-    public String start;
-    public String end;
+    private String start;
+    private String end;
 
     public Move(String end, String start) {
         this.end = end;
