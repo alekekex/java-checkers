@@ -2,7 +2,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Input {
-    public static int getIntChoice(Scanner sc, String prompt, int min, int max) {
+    public static int getChoice(Scanner sc, String prompt, int min, int max) {
         boolean isValid = false;
         int choice = -1;
 
@@ -31,7 +31,23 @@ public class Input {
         return choice;
     }
 
-    public static String getPlayerMove(Scanner sc, String prompt) {
+    public static String getName(Scanner sc, String prompt) {
+        boolean isValid = false;
+        String name;
+
+        do {
+            System.out.print(prompt);
+            name = sc.nextLine();
+
+            if (name.isEmpty() || name.isBlank())
+                System.out.println("Invalid input! Please enter a valid name.");
+            else isValid = true;
+        } while (!isValid);
+
+        return name;
+    }
+
+    public static String getMove(Scanner sc, String prompt) {
         boolean isValid = false;
         String move;
 
@@ -52,7 +68,7 @@ public class Input {
         return move;
     }
 
-    public static void getEnterInput(Scanner sc, String prompt) {
+    public static void getEnter(Scanner sc, String prompt) {
         System.out.print(prompt);
         sc.nextLine();
     }
