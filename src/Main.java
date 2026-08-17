@@ -7,15 +7,19 @@ public class Main {
 
         while (isRunning) {
             Display.displayIntro();
-            int choice = Input.getIntChoice(sc, "Enter your choice: ", 1, 3);
+            int choice = Input.getChoice(sc, "Enter your choice: ", 1, 3);
+            System.out.println();
 
             switch (choice) {
                 case 1:
-                    System.out.println("Gameplay will be implemented soon!");
+                    Checkers game = new Checkers();
+                    game.playGame(sc);
+                    System.out.println();
                     break;
                 case 2:
                     Display.displayRules();
-                    Input.getEnterInput(sc, "Press Enter to go back...");
+                    Input.getEnter(sc, "Press Enter to return to Main Menu...");
+                    System.out.println();
                     break;
                 case 3:
                     isRunning = false;
