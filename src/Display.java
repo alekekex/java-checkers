@@ -10,6 +10,12 @@ public class Display {
 
     }
 
+    public static void displayPlayerSetup() {
+        System.out.println("+----------------------------------+");
+        System.out.println("|           PLAYER SETUP           |");
+        System.out.println("+----------------------------------+");
+    }
+
     public static void displayBoard(Piece[][] board) {
         System.out.println();
         System.out.println("    A   B   C   D   E   F   G   H");
