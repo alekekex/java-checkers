@@ -5,10 +5,13 @@ public class NormalPiece extends Piece {
 
     @Override
     public String getPiece() {
+        String piece = null;
+
         if (getColor().equals("WHITE"))
-            return "○";
+            piece = "○";
         else if (getColor().equals("BLACK"))
-            return "●";
-        else return null;
+            piece = "●";
+
+        return piece;
     }
 }
