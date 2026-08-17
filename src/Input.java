@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Input {
@@ -47,25 +49,30 @@ public class Input {
         return name;
     }
 
-    public static String getMove(Scanner sc, String prompt) {
+    public static Position getPosition(Scanner sc, String prompt) {
         boolean isValid = false;
-        String move;
+        Position position = null;
+        String s;
 
         do {
+            isValid = false;
             System.out.print(prompt);
-            move = sc.nextLine();
+            s = sc.nextLine();
 
-            if (move.isEmpty() || move.isBlank())
-                System.out.println("Invalid input! Please enter a valid move.");
-            else if (move.length() != 2)
-                System.out.println("Invalid input! Move must contains 2 characters only.");
-            else if (move.charAt(0) < 'A' || move.charAt(0) > 'H' ||
-                    move.charAt(1) < '1' || move.charAt(1) > '8')
-                System.out.println("Invalid input! Move must be between A1 and H8.");
-            else isValid = true;
+            if (s.isEmpty() || s.isBlank())
+                System.out.println("Invalid input! Please enter a valid position.");
+            else if (s.length() != 2)
+                System.out.println("Invalid input! Position must contains 2 characters only.");
+            else if (s.charAt(0) < 'A' || s.charAt(0) > 'H' ||
+                    s.charAt(1) < '1' || s.charAt(1) > '8')
+                System.out.println("Invalid input! Position must be between A1 and H8.");
+            else {
+                isValid = true;
+                position = new Position(s);
+            }
         } while (!isValid);
 
-        return move;
+        return position;
     }
 
     public static void getEnter(Scanner sc, String prompt) {
