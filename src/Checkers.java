@@ -17,7 +17,14 @@ public class Checkers {
         initializePlayers(sc);
 
         while (!isGameOver) {
-            // game stuff
+            Player player = players[playerIdx];
+
+            Display.displayBoard(board.getBoard());
+            Move move = getMove(sc, player);
+
+
+            if (!isGameOver)
+                switchTurn();
         }
     }
 
@@ -30,5 +37,23 @@ public class Checkers {
         players[1] = new Player(blackName, board.getBlackPieces());
     }
 
+    public Move getMove(Scanner sc, Player player) {
+        System.out.println(player.getName().toUpperCase() + "\'S MOVE (PLAYER " + (playerIdx + 1) + ")");
+        Position start = Input.getPosition(sc, "From: ");
+        Position end = Input.getPosition(sc, "To: ");
 
+        return new Move(start, end);
+    }
+
+    public boolean isValidMove(Move move) {
+        boolean isValid = false;
+
+        // validation stuff
+
+        return isValid;
+    }
+
+    public void switchTurn() {
+        playerIdx = 1 - playerIdx;
+    }
 }
