@@ -15,6 +15,7 @@ public class Checkers {
 
     public void playGame(Scanner sc) {
         initializePlayers(sc);
+        boolean isTurnOver = false;
 
         while (!isGameOver) {
             Player player = players[playerIdx];
@@ -22,15 +23,16 @@ public class Checkers {
             Display.displayBoard(board.getBoard());
             Move move = getMove(sc, player);
 
-            /*if (isValidMove(move))
-                move piece
-            else if (isValidCapture(move))
-                capture piece;
-            else invalid*/
+            if (makeMove(move, player)) { // has no king piece implementation yet
+                checkIfGameOver(player);
 
+                if (!isGameOver)
+                    switchTurn();
+            }
+        }
 
-            if (!isGameOver)
-                switchTurn();
+        if (isGameOver) {
+            System.out.println("We have a winner!"); // temp winner display
         }
     }
 
@@ -39,8 +41,8 @@ public class Checkers {
         String whiteName = Input.getName(sc, "Enter White player's name: ");
         String blackName = Input.getName(sc, "Enter Black player's name: ");
 
-        players[0] = new Player(whiteName, board.getWhitePieces());
-        players[1] = new Player(blackName, board.getBlackPieces());
+        players[0] = new Player(whiteName, "WHITE");
+        players[1] = new Player(blackName, "BLACK");
     }
 
     public Move getMove(Scanner sc, Player player) {
@@ -51,21 +53,20 @@ public class Checkers {
         return new Move(start, end);
     }
 
-    public boolean isValidMove(Move move) {
+    public boolean isValidMove(Move move, Player player) {
         int startRow = move.getStart().getRow();
         int startColumn = move.getStart().getColumn();
         int endRow = move.getEnd().getRow();
         int endColumn = move.getEnd().getColumn();
 
-        String origColor = board.getPiece(move.getStart()).getColor();
         boolean isValid = false;
 
         if (!board.isEmpty(move.getStart()) && board.isEmpty(move.getEnd())) {
-            if (origColor.equals("WHITE")) {
+            if (player.getColor().equals("WHITE")) {
                 if (endRow == startRow + 1 && endColumn == startColumn + 1 ||
                         endRow == startRow + 1 && endColumn == startColumn - 1)
                     isValid = true;
-            } else if (origColor.equals("BLACK")) {
+            } else if (player.getColor().equals("BLACK")) {
                 if (endRow == startRow - 1 && endColumn == startColumn + 1 ||
                         endRow == startRow - 1 && endColumn == startColumn - 1)
                     isValid = true;
@@ -75,7 +76,41 @@ public class Checkers {
         return isValid;
     }
 
-    public boolean isValidCapture(Move move) {
+    public boolean isValidCapture(Move move, Player player) {
+        int startRow = move.getStart().getRow();
+        int startColumn = move.getStart().getColumn();
+        int endRow = move.getEnd().getRow();
+        int endColumn = move.getEnd().getColumn();
+
+        Position captured = getCapturePosition(move);
+        boolean isValid = false;
+
+        if (!board.isEmpty(move.getStart()) && board.isEmpty(move.getEnd())) {
+            if (player.getColor().equals("WHITE")) {
+                if (endRow == startRow + 2 && endColumn == startColumn + 2 ||
+                        endRow == startRow + 2 && endColumn == startColumn - 2)
+                    if (!board.isEmpty(captured)) {
+                        String capturedColor = board.getPiece(captured).getColor();
+
+                        if (!capturedColor.equals(player.getColor()))
+                            isValid = true;
+                    }
+            } else if (player.getColor().equals("BLACK")) {
+                if (endRow == startRow - 2 && endColumn == startColumn + 2 ||
+                        endRow == startRow - 2 && endColumn == startColumn - 2)
+                    if (!board.isEmpty(captured)) {
+                        String capturedColor = board.getPiece(captured).getColor();
+
+                        if (!capturedColor.equals(player.getColor()))
+                            isValid = true;
+                    }
+            }
+        }
+
+        return isValid;
+    }
+
+    public Position getCapturePosition(Move move) {
         int startRow = move.getStart().getRow();
         int startColumn = move.getStart().getColumn();
         int endRow = move.getEnd().getRow();
@@ -83,34 +118,31 @@ public class Checkers {
 
         int midRow = (startRow + endRow) / 2 + 1;
         int midColumn = (startColumn + endColumn) / 2;
-        Position captured = new Position(midColumn, midRow);
 
-        String origColor = board.getPiece(move.getStart()).getColor();
-        boolean isValid = false;
+        return new Position(midColumn, midRow);
+    }
 
-        if (!board.isEmpty(move.getStart()) && board.isEmpty(move.getEnd())) {
-            if (origColor.equals("WHITE")) {
-                if (endRow == startRow + 2 && endColumn == startColumn + 2 ||
-                        endRow == startRow + 2 && endColumn == startColumn - 2)
-                    if (!board.isEmpty(captured)) {
-                        String capturedColor = board.getPiece(captured).getColor();
+    public boolean makeMove(Move move, Player player) {
+        boolean isValid = true;
 
-                        if (!capturedColor.equals(origColor))
-                            isValid = true;
-                    }
-            } else if (origColor.equals("BLACK")) {
-                if (endRow == startRow - 2 && endColumn == startColumn + 2 ||
-                        endRow == startRow - 2 && endColumn == startColumn - 2)
-                    if (!board.isEmpty(captured)) {
-                        String capturedColor = board.getPiece(captured).getColor();
-
-                        if (!capturedColor.equals(origColor))
-                            isValid = true;
-                    }
-            }
+        if (isValidMove(move, player))
+            board.movePiece(move);
+        else if (isValidCapture(move, player)) {
+            board.capturePiece(move, getCapturePosition(move));
+            player.removePiece();
+        }
+        else {
+            isValid = false;
+            System.out.println();
+            System.out.println("Invalid move! Please try again.");
         }
 
         return isValid;
+    }
+
+    public void checkIfGameOver(Player player) {
+        if (player.hasNoPieces())
+            isGameOver = true;
     }
 
     public void switchTurn() {
