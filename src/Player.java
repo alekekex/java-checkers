@@ -1,28 +1,33 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Player {
-    private String name;
-    private List<Piece> pieces;
+    public static final int INITIAL_PIECE_COUNT = 12;
 
-    public Player(String name, List<Piece> pieces) {
+    private String name;
+    private String color;
+    private int pieceCount;
+
+    public Player(String name, String color) {
         this.name = name;
-        this.pieces = pieces;
+        this.color = color;
+        this.pieceCount = INITIAL_PIECE_COUNT;
     }
 
     public String getName() {
         return name;
     }
 
-    public List<Piece> getPieces() {
-        return pieces;
+    public String getColor() {
+        return color;
     }
 
-    public void addPiece(Piece piece) {
-        pieces.add(piece);
+    public int getPieceCount() {
+        return pieceCount;
     }
 
-    public void removePiece(Piece piece) {
-        pieces.remove(piece);
+    public void removePiece() {
+        pieceCount--;
+    }
+
+    public boolean hasNoPieces() {
+        return pieceCount == 0;
     }
 }
