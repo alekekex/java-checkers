@@ -25,6 +25,7 @@ public class Checkers {
 
             if (makeMove(move, player)) { // has no king piece implementation yet
                 checkIfGameOver(player);
+                checkPromotion(move);
 
                 if (!isGameOver)
                     switchTurn();
@@ -62,7 +63,13 @@ public class Checkers {
         boolean isValid = false;
 
         if (!board.isEmpty(move.getStart()) && board.isEmpty(move.getEnd())) {
-            if (player.getColor().equals("WHITE")) {
+            if (board.getPiece(move.getStart()) instanceof KingPiece) {
+                if (endRow == startRow + 1 && endColumn == startColumn + 1 ||
+                        endRow == startRow + 1 && endColumn == startColumn - 1 ||
+                        endRow == startRow - 1 && endColumn == startColumn + 1 ||
+                        endRow == startRow - 1 && endColumn == startColumn - 1)
+                    isValid = true;
+            } else if (player.getColor().equals("WHITE")) {
                 if (endRow == startRow + 1 && endColumn == startColumn + 1 ||
                         endRow == startRow + 1 && endColumn == startColumn - 1)
                     isValid = true;
@@ -86,24 +93,29 @@ public class Checkers {
         boolean isValid = false;
 
         if (!board.isEmpty(move.getStart()) && board.isEmpty(move.getEnd())) {
-            if (player.getColor().equals("WHITE")) {
+            if (board.getPiece(move.getStart()) instanceof KingPiece) {
+                if (endRow == startRow + 2 && endColumn == startColumn + 2 ||
+                        endRow == startRow + 2 && endColumn == startColumn - 2 ||
+                        endRow == startRow - 2 && endColumn == startColumn + 2 ||
+                        endRow == startRow - 2 && endColumn == startColumn - 2)
+                    isValid = true;
+            } else if (player.getColor().equals("WHITE")) {
                 if (endRow == startRow + 2 && endColumn == startColumn + 2 ||
                         endRow == startRow + 2 && endColumn == startColumn - 2)
-                    if (!board.isEmpty(captured)) {
-                        String capturedColor = board.getPiece(captured).getColor();
+                    isValid = true;
 
-                        if (!capturedColor.equals(player.getColor()))
-                            isValid = true;
-                    }
             } else if (player.getColor().equals("BLACK")) {
                 if (endRow == startRow - 2 && endColumn == startColumn + 2 ||
                         endRow == startRow - 2 && endColumn == startColumn - 2)
-                    if (!board.isEmpty(captured)) {
-                        String capturedColor = board.getPiece(captured).getColor();
+                    isValid = true;
+            }
 
-                        if (!capturedColor.equals(player.getColor()))
-                            isValid = true;
-                    }
+            if (isValid && !board.isEmpty(captured)) {
+                String capturedColor = board.getPiece(captured).getColor();
+
+                if (!capturedColor.equals(player.getColor()))
+                    isValid = true;
+                else isValid = false;
             }
         }
 
@@ -130,14 +142,21 @@ public class Checkers {
         else if (isValidCapture(move, player)) {
             board.capturePiece(move, getCapturePosition(move));
             player.removePiece();
-        }
-        else {
+        } else {
             isValid = false;
             System.out.println();
             System.out.println("Invalid move! Please try again.");
         }
 
         return isValid;
+    }
+
+    public void checkPromotion(Move move) {
+        if (!board.isEmpty(move.getEnd()) && board.isLastRow(move.getEnd())) {
+            board.promotePiece(move.getEnd());
+            System.out.println();
+            System.out.println("Piece promoted to King!");
+        }
     }
 
     public void checkIfGameOver(Player player) {

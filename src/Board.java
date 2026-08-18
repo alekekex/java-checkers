@@ -29,6 +29,10 @@ public class Board {
         return board[position.getRow()][position.getColumn()];
     }
 
+    public boolean isLastRow(Position position) {
+        return position.getRow() == 0 || position.getRow() == 7;
+    }
+
     public boolean isEmpty(Position position) {
         return board[position.getRow()][position.getColumn()] == null;
     }
@@ -54,5 +58,10 @@ public class Board {
         board[endRow][endColumn] = board[startRow][startColumn];
         board[startRow][startColumn] = null;
         board[midRow][midColumn] = null;
+    }
+
+    public void promotePiece(Position position) {
+        Piece piece = board[position.getRow()][position.getColumn()];
+        board[position.getRow()][position.getColumn()] = new KingPiece(piece.getColor());
     }
 }
