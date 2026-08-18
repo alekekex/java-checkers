@@ -22,6 +22,12 @@ public class Checkers {
             Display.displayBoard(board.getBoard());
             Move move = getMove(sc, player);
 
+            /*if (isValidMove(move))
+                move piece
+            else if (isValidCapture(move))
+                capture piece;
+            else invalid*/
+
 
             if (!isGameOver)
                 switchTurn();
@@ -46,9 +52,63 @@ public class Checkers {
     }
 
     public boolean isValidMove(Move move) {
+        int startRow = move.getStart().getRow();
+        int startColumn = move.getStart().getColumn();
+        int endRow = move.getEnd().getRow();
+        int endColumn = move.getEnd().getColumn();
+
+        String origColor = board.getPiece(move.getStart()).getColor();
         boolean isValid = false;
 
-        // validation stuff
+        if (!board.isEmpty(move.getStart()) && board.isEmpty(move.getEnd())) {
+            if (origColor.equals("WHITE")) {
+                if (endRow == startRow + 1 && endColumn == startColumn + 1 ||
+                        endRow == startRow + 1 && endColumn == startColumn - 1)
+                    isValid = true;
+            } else if (origColor.equals("BLACK")) {
+                if (endRow == startRow - 1 && endColumn == startColumn + 1 ||
+                        endRow == startRow - 1 && endColumn == startColumn - 1)
+                    isValid = true;
+            }
+        }
+
+        return isValid;
+    }
+
+    public boolean isValidCapture(Move move) {
+        int startRow = move.getStart().getRow();
+        int startColumn = move.getStart().getColumn();
+        int endRow = move.getEnd().getRow();
+        int endColumn = move.getEnd().getColumn();
+
+        int midRow = (startRow + endRow) / 2 + 1;
+        int midColumn = (startColumn + endColumn) / 2;
+        Position captured = new Position(midColumn, midRow);
+
+        String origColor = board.getPiece(move.getStart()).getColor();
+        boolean isValid = false;
+
+        if (!board.isEmpty(move.getStart()) && board.isEmpty(move.getEnd())) {
+            if (origColor.equals("WHITE")) {
+                if (endRow == startRow + 2 && endColumn == startColumn + 2 ||
+                        endRow == startRow + 2 && endColumn == startColumn - 2)
+                    if (!board.isEmpty(captured)) {
+                        String capturedColor = board.getPiece(captured).getColor();
+
+                        if (!capturedColor.equals(origColor))
+                            isValid = true;
+                    }
+            } else if (origColor.equals("BLACK")) {
+                if (endRow == startRow - 2 && endColumn == startColumn + 2 ||
+                        endRow == startRow - 2 && endColumn == startColumn - 2)
+                    if (!board.isEmpty(captured)) {
+                        String capturedColor = board.getPiece(captured).getColor();
+
+                        if (!capturedColor.equals(origColor))
+                            isValid = true;
+                    }
+            }
+        }
 
         return isValid;
     }
