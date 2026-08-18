@@ -7,6 +7,11 @@ public class Position {
         this.row = position.charAt(1) - '0';
     }
 
+    public Position(int column, int row) {
+        this.column = (char) (column + 'A');
+        this.row = row;
+    }
+
     public int getColumn() {
         return column - 'A';
     }
