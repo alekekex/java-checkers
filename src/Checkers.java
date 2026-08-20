@@ -145,7 +145,7 @@ public class Checkers {
         } else {
             isValid = false;
             System.out.println();
-            System.out.println("Invalid move! Please try again."); // TEST PUSH
+            System.out.println("Invalid move! Please try again.");
         }
 
         return isValid;
