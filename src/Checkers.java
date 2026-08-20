@@ -23,7 +23,7 @@ public class Checkers {
             Display.displayBoard(board.getBoard());
             Move move = getMove(sc, player);
 
-            if (makeMove(move, player)) { // has no king piece implementation yet
+            if (makeMove(move, player)) { 
                 checkIfGameOver(player);
                 checkPromotion(move);
 
@@ -134,7 +134,7 @@ public class Checkers {
         return new Position(midColumn, midRow);
     }
 
-    public boolean makeMove(Move move, Player player) {
+    public boolean makeMove(Move move, Player player) { // might implement recursion for capturing
         boolean isValid = true;
 
         if (isValidMove(move, player))
@@ -145,7 +145,7 @@ public class Checkers {
         } else {
             isValid = false;
             System.out.println();
-            System.out.println("Invalid move! Please try again.");
+            System.out.println("Invalid move! Please try again."); // TEST PUSH
         }
 
         return isValid;
