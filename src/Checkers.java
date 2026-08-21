@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Checkers {
@@ -15,17 +17,16 @@ public class Checkers {
 
     public void playGame(Scanner sc) {
         initializePlayers(sc);
-        boolean isTurnOver = false;
 
         while (!isGameOver) {
             Player player = players[playerIdx];
+            Player opponent = players[1 - playerIdx];
 
             Display.displayBoard(board.getBoard());
             Move move = getMove(sc, player);
 
-            if (makeMove(move, player)) { 
+            if (makeMove(sc, move, player, opponent)) {
                 checkIfGameOver(player);
-                checkPromotion(move);
 
                 if (!isGameOver)
                     switchTurn();
@@ -33,7 +34,8 @@ public class Checkers {
         }
 
         if (isGameOver) {
-            System.out.println("We have a winner!"); // temp winner display
+            Player winner = players[playerIdx];
+            System.out.println(winner.getName() + " is the winner!");
         }
     }
 
@@ -134,14 +136,73 @@ public class Checkers {
         return new Position(midColumn, midRow);
     }
 
-    public boolean makeMove(Move move, Player player) { // might implement recursion for capturing
+    public List<Position> getAvailableCaptures(Position position, Player player) {
+        List<Position> positions = new ArrayList<>();
+        List<Position> candidates = new ArrayList<>();
+
+        candidates.add(new Position(position.getColumn() + 2, position.getRow() + 3));
+        candidates.add(new Position(position.getColumn() - 2, position.getRow() + 3));
+        candidates.add(new Position(position.getColumn() + 2, position.getRow() - 1));
+        candidates.add(new Position(position.getColumn() - 2, position.getRow() - 1));
+
+        for (Position candidate : candidates) {
+            Move move = new Move(position, candidate);
+
+            if (board.isInBounds(candidate) && isValidCapture(move, player))
+                positions.add(candidate);
+        }
+
+        return positions;
+    }
+
+    public void continueCapture(Scanner sc, Position position, Player player) {
+        List<Position> captures = getAvailableCaptures(position, player);
+
+        if (captures.isEmpty()) {
+            System.out.println();
+            System.out.println("Successfully captured pieces!");
+        } else if (captures.size() == 1) {
+            Position capture = captures.get(0);
+            Move move = new Move(position, capture);
+
+            board.capturePiece(move, getCapturePosition(move));
+            checkPromotion(move);
+
+            continueCapture(sc, capture, player);
+        } else {
+            for (int i = 0; i < captures.size(); i++) {
+                char column = (char) (captures.get(i).getColumn() + 'A');
+                int row = captures.get(i).getRow() + 1;
+
+                System.out.println((i + 1) + ". " + column + row);
+            }
+
+            int choice = Input.getChoice(sc, "Enter your choice: ", 1, captures.size());
+            System.out.println();
+
+            Position capture = captures.get(choice - 1);
+            Move move = new Move(position, capture);
+
+            board.capturePiece(move, getCapturePosition(move));
+            checkPromotion(move);
+
+            continueCapture(sc, capture, player);
+        }
+    }
+
+    public boolean makeMove(Scanner sc, Move move, Player player, Player opponent) {
         boolean isValid = true;
 
-        if (isValidMove(move, player))
+        if (isValidMove(move, player)) {
             board.movePiece(move);
+            checkPromotion(move);
+        }
         else if (isValidCapture(move, player)) {
             board.capturePiece(move, getCapturePosition(move));
-            player.removePiece();
+            opponent.removePiece();
+            checkPromotion(move);
+
+            continueCapture(sc, move.getEnd(), player);
         } else {
             isValid = false;
             System.out.println();
