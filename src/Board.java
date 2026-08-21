@@ -37,6 +37,11 @@ public class Board {
         return board[position.getRow()][position.getColumn()] == null;
     }
 
+    public boolean isInBounds(Position position) {
+        return position.getRow() >= 0 && position.getRow() < 8 &&
+                position.getColumn() >= 0 && position.getColumn() < 8;
+    }
+
     public void movePiece(Move move) {
         int startRow = move.getStart().getRow();
         int startColumn = move.getStart().getColumn();
